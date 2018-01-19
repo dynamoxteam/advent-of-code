@@ -1,0 +1,28 @@
+{
+  "name": "the-advent-of-code",
+  "version": "1.0.0",
+  "description": "Advent of Code is a series of small programming puzzles for a variety of skill levels. They are self-contained and are just as appropriate for an expert who wants to stay sharp as they are for a beginner who is just learning to code. Each puzzle calls upon different skills and has two parts that build on a theme.",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha --require babel-register --require babel-polyfill --recursive",
+    "watch": "mocha --require babel-register --require babel-polyfill --recursive --watch"
+  },
+  "keywords": [
+    "adventofcode"
+  ],
+  "author": "Moacir Rosa <paulomoacir.junior@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
+    "mocha": "^5.0.0"
+  },
+  "dependencies": {
+    "babel-cli": "^6.26.0"
+  }
+}

@@ -1,0 +1,14 @@
+# Dependency directories
+2017/js/node_modules
+
+# Optional npm cache directory
+2017/js/.npm
+
+# Optional eslint cache
+2017/js/.eslintcache
+
+# Optional REPL history
+2017/js/.node_repl_history
+
+# Yarn Integrity file
+2017/js/.yarn-integrity
