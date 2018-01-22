@@ -3,7 +3,7 @@ import {
   inverseCaptchaNext, 
   inverseCaptchaHalfwayAround, 
   parseInput 
-} from '../../src/day1/inverse-captcha'
+} from '../src/inverse-captcha'
 
 describe('Day1', () => {
   describe('parseInput', () => {
