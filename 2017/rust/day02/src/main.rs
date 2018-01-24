@@ -81,7 +81,7 @@ fn main() {
     let arg = env::args().skip(1).next();
 
     if let None = arg {
-        println!("Usage: day02 <input>");
+        println!("Usage: day02 <input file>");
         return;
     }
 
