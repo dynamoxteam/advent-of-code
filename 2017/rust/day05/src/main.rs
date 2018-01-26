@@ -9,9 +9,15 @@ enum InstructionType {
 }
 
 fn find_exit(input: &str, instruction_type: InstructionType) -> usize {
-    let mut jumps: Vec<isize> = input.trim().lines().filter_map(|line| line.parse::<isize>().ok()).collect();
+    let mut jumps: Vec<isize> = input
+        .trim()
+        .lines()
+        .filter_map(|line| line.parse::<isize>().ok())
+        .collect();
 
-    if jumps.len() == 0 { return 0; }
+    if jumps.len() == 0 {
+        return 0;
+    }
 
     let mut pc = 0;
 
@@ -23,7 +29,9 @@ fn find_exit(input: &str, instruction_type: InstructionType) -> usize {
     for steps in 0.. {
         let instruction = jumps.get_mut(pc as usize);
 
-        if instruction == None { return steps; }
+        if instruction == None {
+            return steps;
+        }
 
         let jump = instruction.unwrap();
 
@@ -50,14 +58,21 @@ fn main() {
     }
 
     let mut input = String::new();
-    
+
     if let Err(error) = file.unwrap().read_to_string(&mut input) {
         println!("{}", error.to_string());
         return;
     }
 
-    println!("Strange steps to the exit: {}", find_exit(input.as_str(), InstructionType::Strange));
-    println!("Even stranger steps to the exit: {}", find_exit(input.as_str(), InstructionType::EvenStranger));
+    println!(
+        "Strange steps to the exit: {}",
+        find_exit(input.as_str(), InstructionType::Strange)
+    );
+
+    println!(
+        "Even stranger steps to the exit: {}",
+        find_exit(input.as_str(), InstructionType::EvenStranger)
+    );
 }
 
 #[test]
@@ -67,5 +82,8 @@ fn test_strange() {
 
 #[test]
 fn test_even_stranger() {
-    assert_eq!(find_exit("0\n3\n0\n1\n-3\n", InstructionType::EvenStranger), 10);
+    assert_eq!(
+        find_exit("0\n3\n0\n1\n-3\n", InstructionType::EvenStranger),
+        10
+    );
 }

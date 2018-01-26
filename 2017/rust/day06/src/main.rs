@@ -9,9 +9,11 @@ fn reallocate(input: &str) -> (usize, usize) {
         .split('\t')
         .filter_map(|s| s.parse().ok())
         .collect();
-    
-    if banks.is_empty() { return (0, 0); }
-    
+
+    if banks.is_empty() {
+        return (0, 0);
+    }
+
     let mut history = vec![banks.clone()];
 
     for cycles in 1.. {
@@ -22,8 +24,11 @@ fn reallocate(input: &str) -> (usize, usize) {
             .max_by(|&(i1, s1): &(usize, usize), &(i2, s2): &(usize, usize)| {
                 let slots_cmp = s1.cmp(&s2);
 
-                if slots_cmp != Ordering::Equal { slots_cmp }
-                else { i1.cmp(&i2).reverse() }
+                if slots_cmp != Ordering::Equal {
+                    slots_cmp
+                } else {
+                    i1.cmp(&i2).reverse()
+                }
             })
             .unwrap();
 
@@ -37,8 +42,9 @@ fn reallocate(input: &str) -> (usize, usize) {
 
         if let Some(position) = history.iter().position(|b| *b == banks) {
             return (cycles, cycles - position);
+        } else {
+            history.push(banks.clone())
         }
-        else { history.push(banks.clone()) }
     }
 
     (0, 0)
@@ -60,14 +66,14 @@ fn main() {
     }
 
     let mut input = String::new();
-    
+
     if let Err(error) = file.unwrap().read_to_string(&mut input) {
         println!("{}", error.to_string());
         return;
     }
 
     let (cycles, loop_size) = reallocate(input.as_str());
-    
+
     println!("Redistribution cycles: {}", cycles);
     println!("Loop size: {}", loop_size);
 }

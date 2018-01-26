@@ -16,7 +16,9 @@ enum ChecksumError {
 impl ToString for ChecksumError {
     fn to_string(&self) -> String {
         match self {
-            &ChecksumError::InvalidCell => String::from("One of the cells could not be converted into a value."),
+            &ChecksumError::InvalidCell => {
+                String::from("One of the cells could not be converted into a value.")
+            }
         }
     }
 }
@@ -28,7 +30,7 @@ fn solve_checksum(input: &str, checksum_type: ChecksumType) -> Result<isize, Che
     for line in input.lines() {
         for cell in line.split('\t') {
             let value = cell.parse::<isize>();
-            
+
             match value {
                 Ok(value) => row.push(value),
                 Err(_) => return Err(ChecksumError::InvalidCell),
@@ -47,7 +49,8 @@ fn solve_checksum(input: &str, checksum_type: ChecksumType) -> Result<isize, Che
 }
 
 fn calculate_min_max_diff<'a, I>(row: I) -> isize
-    where I: Iterator<Item = &'a isize> + Clone
+where
+    I: Iterator<Item = &'a isize> + Clone,
 {
     let max = row.clone().max();
     let min = row.clone().min();
@@ -60,13 +63,19 @@ fn calculate_min_max_diff<'a, I>(row: I) -> isize
 }
 
 fn calculate_even_division<'a, I>(row: I) -> isize
-    where I: Iterator<Item = &'a isize> + Clone
+where
+    I: Iterator<Item = &'a isize> + Clone,
 {
     for dividend in row.clone() {
         for divisor in row.clone() {
-            if divisor as *const isize == dividend as *const isize { continue; }
+            if divisor as *const isize == dividend as *const isize {
+                continue;
+            }
 
-            let result = (dividend.checked_div(*divisor), dividend.checked_rem(*divisor));
+            let result = (
+                dividend.checked_div(*divisor),
+                dividend.checked_rem(*divisor),
+            );
 
             if let (Some(quotient), Some(0)) = result {
                 return quotient;
@@ -93,7 +102,7 @@ fn main() {
     }
 
     let mut input = String::new();
-    
+
     if let Err(error) = file.unwrap().read_to_string(&mut input) {
         println!("{}", error.to_string());
         return;
@@ -118,17 +127,35 @@ fn main() {
 
 #[test]
 fn test_min_max_diff() {
-    assert_eq!(solve_checksum("5\t1\t9\t5\n7\t5\t3\n2\t4\t6\t8", ChecksumType::MinMaxDiff), Ok(18));
+    assert_eq!(
+        solve_checksum("5\t1\t9\t5\n7\t5\t3\n2\t4\t6\t8", ChecksumType::MinMaxDiff),
+        Ok(18)
+    );
 
     assert_eq!(solve_checksum("", ChecksumType::MinMaxDiff), Ok(0));
-    assert_eq!(solve_checksum("01a34", ChecksumType::MinMaxDiff), Err(ChecksumError::InvalidCell));
+
+    assert_eq!(
+        solve_checksum("01a34", ChecksumType::MinMaxDiff),
+        Err(ChecksumError::InvalidCell)
+    );
 }
 
 #[test]
 fn test_even_division() {
-    assert_eq!(solve_checksum("5\t9\t2\t8\n9\t4\t7\t3\n3\t8\t6\t5", ChecksumType::EvenDivision), Ok(9));
+    assert_eq!(
+        solve_checksum(
+            "5\t9\t2\t8\n9\t4\t7\t3\n3\t8\t6\t5",
+            ChecksumType::EvenDivision
+        ),
+        Ok(9)
+    );
+
     assert_eq!(solve_checksum("1\t1", ChecksumType::EvenDivision), Ok(1));
 
     assert_eq!(solve_checksum("", ChecksumType::EvenDivision), Ok(0));
-    assert_eq!(solve_checksum("01a34", ChecksumType::EvenDivision), Err(ChecksumError::InvalidCell));
+
+    assert_eq!(
+        solve_checksum("01a34", ChecksumType::EvenDivision),
+        Err(ChecksumError::InvalidCell)
+    );
 }

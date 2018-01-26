@@ -9,8 +9,10 @@ enum CaptchaType {
 }
 
 fn solve_captcha(input: &str, captcha_type: CaptchaType) -> u32 {
-    let digits = input.chars().filter_map((|c| c.to_digit(10)) as fn(char) -> Option<u32>);
-    
+    let digits = input
+        .chars()
+        .filter_map((|c| c.to_digit(10)) as fn(char) -> Option<u32>);
+
     let digits_skipped = match captcha_type {
         CaptchaType::NextDigit => 1,
         CaptchaType::HalfwayAround => digits.clone().count() / 2,
@@ -18,7 +20,11 @@ fn solve_captcha(input: &str, captcha_type: CaptchaType) -> u32 {
 
     let cycle = digits.clone().cycle().skip(digits_skipped);
 
-    digits.zip(cycle).filter(|&(d, n)| d == n).map(|(d, _)| d).sum()
+    digits
+        .zip(cycle)
+        .filter(|&(d, n)| d == n)
+        .map(|(d, _)| d)
+        .sum()
 }
 
 fn main() {
@@ -37,14 +43,21 @@ fn main() {
     }
 
     let mut input = String::new();
-    
+
     if let Err(error) = file.unwrap().read_to_string(&mut input) {
         println!("{}", error.to_string());
         return;
     }
 
-    println!("Next digit captcha: {}", solve_captcha(input.as_str(), CaptchaType::NextDigit));
-    println!("Next digit captcha: {}", solve_captcha(input.as_str(), CaptchaType::HalfwayAround));
+    println!(
+        "Next digit captcha: {}",
+        solve_captcha(input.as_str(), CaptchaType::NextDigit)
+    );
+
+    println!(
+        "Halfway around captcha: {}",
+        solve_captcha(input.as_str(), CaptchaType::HalfwayAround)
+    );
 }
 
 #[test]
