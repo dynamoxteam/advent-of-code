@@ -8,21 +8,8 @@ enum CaptchaType {
     HalfwayAround,
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-enum CaptchaError {
-    InvalidChar,
-}
-
-impl ToString for CaptchaError {
-    fn to_string(&self) -> String {
-        match self {
-            &CaptchaError::InvalidChar => String::from("Invalid character in the input."),
-        }
-    }
-}
-
-fn solve_captcha(input: &str, captcha_type: CaptchaType) -> Result<u32, CaptchaError> {
-    let digits = input.chars().map((|c| c.to_digit(10)) as fn(char) -> Option<u32>);
+fn solve_captcha(input: &str, captcha_type: CaptchaType) -> u32 {
+    let digits = input.chars().filter_map((|c| c.to_digit(10)) as fn(char) -> Option<u32>);
     
     let digits_skipped = match captcha_type {
         CaptchaType::NextDigit => 1,
@@ -31,16 +18,7 @@ fn solve_captcha(input: &str, captcha_type: CaptchaType) -> Result<u32, CaptchaE
 
     let cycle = digits.clone().cycle().skip(digits_skipped);
 
-    let mut sum = 0;
-
-    for (digit, next) in digits.zip(cycle) {
-        match digit {
-            None => return Err(CaptchaError::InvalidChar),
-            Some(value) => if digit == next { sum += value },
-        };
-    }
-
-    Ok(sum)
+    digits.zip(cycle).filter(|&(d, n)| d == n).map(|(d, _)| d).sum()
 }
 
 fn main() {
@@ -65,42 +43,27 @@ fn main() {
         return;
     }
 
-    match solve_captcha(input.as_str(), CaptchaType::NextDigit) {
-        Ok(value) => println!("Next digit captcha: {}", value),
-        Err(error) => {
-            println!("{}", error.to_string());
-            return;
-        }
-    };
-
-    match solve_captcha(input.as_str(), CaptchaType::HalfwayAround) {
-        Ok(value) => println!("Halfway around captcha: {}", value),
-        Err(error) => {
-            println!("{}", error.to_string());
-            return;
-        }
-    };
+    println!("Next digit captcha: {}", solve_captcha(input.as_str(), CaptchaType::NextDigit));
+    println!("Next digit captcha: {}", solve_captcha(input.as_str(), CaptchaType::HalfwayAround));
 }
 
 #[test]
 fn test_next_digit() {
-    assert_eq!(solve_captcha("1122", CaptchaType::NextDigit), Ok(3));
-    assert_eq!(solve_captcha("1111", CaptchaType::NextDigit), Ok(4));
-    assert_eq!(solve_captcha("1234", CaptchaType::NextDigit), Ok(0));
-    assert_eq!(solve_captcha("91212129", CaptchaType::NextDigit), Ok(9));
+    assert_eq!(solve_captcha("1122", CaptchaType::NextDigit), 3);
+    assert_eq!(solve_captcha("1111", CaptchaType::NextDigit), 4);
+    assert_eq!(solve_captcha("1234", CaptchaType::NextDigit), 0);
+    assert_eq!(solve_captcha("91212129", CaptchaType::NextDigit), 9);
 
-    assert_eq!(solve_captcha("", CaptchaType::NextDigit), Ok(0));
-    assert_eq!(solve_captcha("01a34", CaptchaType::NextDigit), Err(CaptchaError::InvalidChar));
+    assert_eq!(solve_captcha("", CaptchaType::NextDigit), 0);
 }
 
 #[test]
 fn test_halfway_around() {
-    assert_eq!(solve_captcha("1212", CaptchaType::HalfwayAround), Ok(6));
-    assert_eq!(solve_captcha("1221", CaptchaType::HalfwayAround), Ok(0));
-    assert_eq!(solve_captcha("123425", CaptchaType::HalfwayAround), Ok(4));
-    assert_eq!(solve_captcha("123123", CaptchaType::HalfwayAround), Ok(12));
-    assert_eq!(solve_captcha("12131415", CaptchaType::HalfwayAround), Ok(4));
+    assert_eq!(solve_captcha("1212", CaptchaType::HalfwayAround), 6);
+    assert_eq!(solve_captcha("1221", CaptchaType::HalfwayAround), 0);
+    assert_eq!(solve_captcha("123425", CaptchaType::HalfwayAround), 4);
+    assert_eq!(solve_captcha("123123", CaptchaType::HalfwayAround), 12);
+    assert_eq!(solve_captcha("12131415", CaptchaType::HalfwayAround), 4);
 
-    assert_eq!(solve_captcha("", CaptchaType::HalfwayAround), Ok(0));
-    assert_eq!(solve_captcha("01a34", CaptchaType::HalfwayAround), Err(CaptchaError::InvalidChar));
+    assert_eq!(solve_captcha("", CaptchaType::HalfwayAround), 0);
 }
