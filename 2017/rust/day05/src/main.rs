@@ -15,11 +15,9 @@ fn find_exit(input: &str, instruction_type: InstructionType) -> usize {
 
     let mut pc = 0;
 
-    let update_instruction = |j: &mut isize| {
-        *j = *j + match instruction_type {
-            InstructionType::Strange => 1,
-            InstructionType::EvenStranger => if *j < 3 { 1 } else { -1 },
-        }
+    let update_instruction: fn(&mut isize) = match instruction_type {
+        InstructionType::Strange => |j: &mut isize| *j = *j + 1,
+        InstructionType::EvenStranger => |j: &mut isize| *j = *j + if *j < 3 { 1 } else { -1 },
     };
 
     for steps in 0.. {
