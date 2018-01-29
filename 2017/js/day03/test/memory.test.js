@@ -1,5 +1,15 @@
 import { expect } from 'chai'
-import { coordinates, last, steps, sum } from '../src/memory'
+import { 
+  circleGenerator, 
+  coordinates, 
+  intersection, 
+  last, 
+  steps,
+  sum,
+  stress
+} from '../src/memory'
+
+/* global describe, it */
 
 describe('Day3', () => {
   describe('last', () => {
@@ -71,6 +81,47 @@ describe('Day3', () => {
 
     it('Should retrieve 1024', () => {
       expect(steps(1024)).to.be.equal(31)
+    })
+
+    it('Should retrieve 1', () => {
+      expect(steps(12, [1, 1])).to.be.equal(1)
+    })
+  })
+
+  describe('circleGenerator', () => {
+    it('Should implement a circleGenerator method', () => {
+      expect(circleGenerator).to.be.a('function')
+    })
+  
+    it('circleGenerator should retrieve a circle', () => {
+      const circle = circleGenerator([-1, 1])
+  
+      expect(circle).to.be.deep.equal(
+        ['-2,2', '-1,2', '0,2', '-2,1', '0,1', '-2,0', '-1,0', '0,0']
+      )
+    })
+  })
+
+  describe('intersection', () => {
+    it('Should implement a intersection method', () => {
+      expect(intersection).to.be.a('function')
+    })
+  
+    it('intersection should retrieve the correct set', () => {
+      expect(intersection([1, 2, 3, 4, 5], [2, 4])).to.be.deep.equal([2, 4])
+      expect(intersection([2, 4], [1, 2, 3, 4, 5])).to.be.deep.equal([2, 4])
+      expect(intersection([2, 4], [1, 3])).to.be.deep.equal([])
+    })
+  })
+
+  describe('stress', () => {
+    it('Should implement a stress method', () => {
+      expect(stress).to.be.a('function')
+    })
+  
+    it('Should retrieve some correct examples', () => {
+      expect(stress(5)).to.be.equal(10)
+      expect(stress(800)).to.be.equal(806)
     })
   })
 })
