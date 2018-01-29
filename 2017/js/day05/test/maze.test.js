@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { esc, parseInput } from '../src/maze'
+import { esc, parseInput, variantEsc } from '../src/maze'
 
 /* global describe, it */
 
@@ -27,6 +27,16 @@ describe('maze', () => {
 
     it('Should retrieve 11', () => {
       expect(esc([0, 0, 2, 0, -3])).to.be.equal(11)
+    })
+  })
+
+  describe('variantEsc', () => {
+    it('Should implement an "variantEsc" method', () => {
+      expect(variantEsc).to.be.a('function')
+    })
+
+    it('Should retrieve 10', () => {
+      expect(variantEsc([0, 3, 0, 1, -3])).to.be.equal(10)
     })
   })
 
