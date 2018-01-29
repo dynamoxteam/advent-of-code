@@ -1,24 +1,55 @@
 import { expect } from 'chai'
-import { check, parseInput, uniq } from '../src/entropy'
+import { 
+  checkAnagram, 
+  checkDuplication, 
+  parseInput, 
+  uniq 
+} from '../src/entropy'
 
 /* global describe, it */
 
 describe('entropy', () => {
-  describe('check', () => {
-    it('Should implement a check method', () => {
-      expect(check).to.be.a('function')
+  describe('checkDuplication', () => {
+    it('Should implement a checkDuplication method', () => {
+      expect(checkDuplication).to.be.a('function')
     })
 
     it('Should be evaluated as valid "aa bb cc dd ee"', () => {
-      expect(check(['aa', 'bb', 'cc', 'dd', 'ee'])).to.be.true
+      expect(checkDuplication(['aa', 'bb', 'cc', 'dd', 'ee'])).to.be.true
     })
 
     it('Should be evaluated as invalid "aa bb cc dd aa"', () => {
-      expect(check(['aa', 'bb', 'cc', 'dd', 'aa'])).to.be.false
+      expect(checkDuplication(['aa', 'bb', 'cc', 'dd', 'aa'])).to.be.false
     })
 
     it('Should be evaluated as invalid "aa bb cc dd aaa"', () => {
-      expect(check(['aa', 'bb', 'cc', 'dd', 'aaa'])).to.be.true
+      expect(checkDuplication(['aa', 'bb', 'cc', 'dd', 'aaa'])).to.be.true
+    })
+  })
+
+  describe('checkAnagram', () => {
+    it('Should implement a checkAnagram method', () => {
+      expect(checkAnagram).to.be.a('function')
+    })
+
+    it('Should be evaluated as valid "abcde fghij"', () => {
+      expect(checkAnagram(['abcde', 'fghij'])).to.be.true
+    })
+
+    it('Should be evaluated as invalid "abcde xyz ecdab"', () => {
+      expect(checkAnagram(['abcde', 'xyz', 'ecdab'])).to.be.false
+    })
+
+    it('Should be evaluated as valid "a ab abc abd abf abj"', () => {
+      expect(checkAnagram(['a', 'ab', 'abc', 'abd', 'abf', 'abj'])).to.be.true
+    })
+
+    it('Should be evaluated as valid "iiii oiii ooii oooi oooo"', () => {
+      expect(checkAnagram(['iiii', 'oiii', 'ooii', 'oooi', 'oooo'])).to.be.true
+    })
+
+    it('Should be evaluated as invalid "oiii ioii iioi iiio"', () => {
+      expect(checkAnagram(['oiii', 'ioii', 'iioi', 'iiio'])).to.be.false
     })
   })
 

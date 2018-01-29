@@ -1,6 +1,16 @@
 import debug from 'debug'
 
-export const check = input => {
+export const checkDuplication = input => {
+  const removeDuplicates = uniq(input)
+  const isValid = input.length === removeDuplicates.length
+
+  debug('aoc:day4:check')(input, isValid)
+
+  return isValid
+}
+
+export const checkAnagram = rawInput => {
+  const input = rawInput.map(entry => entry.split('').sort().join(''))
   const removeDuplicates = uniq(input)
   const isValid = input.length === removeDuplicates.length
 
