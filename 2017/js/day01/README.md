@@ -25,7 +25,7 @@ What is the solution to your captcha?
 
 ``` shell
 docker run -it --rm -v $(pwd):/app -w /app node:8 yarn install
-docker run -it --rm -v $(pwd):/app -w /app node:8 yarn answer
+docker run -it --rm -v $(pwd):/app -w /app -e DEBUG=asnwer node:8 yarn answer
 ```
 
 ## Test

@@ -23,7 +23,7 @@ What is the checksum for the spreadsheet in your puzzle input?
 
 ``` shell
 docker run -it --rm -v $(pwd):/app -w /app node:8 yarn install
-docker run -it --rm -v $(pwd):/app -w /app node:8 yarn answer
+docker run -it --rm -v $(pwd):/app -w /app -e DEBUG=asnwer node:8 yarn answer
 ```
 
 ## Test
