@@ -1,4 +1,4 @@
-export const inverseCaptchaNext = (rawInput) => {
+export const inverseCaptchaNext = rawInput => {
   const input = parseInput(rawInput)
 
   if (input.length === 0) {
@@ -21,7 +21,7 @@ export const inverseCaptchaNext = (rawInput) => {
   return matches.reduce((sum, a) => sum + a, 0)
 }
 
-export const inverseCaptchaHalfwayAround = (rawInput) => {
+export const inverseCaptchaHalfwayAround = rawInput => {
   const input = parseInput(rawInput)
 
   if (input.length === 0) {
@@ -45,15 +45,19 @@ export const inverseCaptchaHalfwayAround = (rawInput) => {
 }
 
 /**
- * @todo Remove \n characters to allow multiline strings
  * @param string input 
  */
-export const parseInput = (input) => {
+export const parseInput = input => {
   if (typeof input !== 'string') {
     throw new Error('A string was expected as input')
   }
 
-  return input.split("").map(entry => parseInt(entry, 10))
+  /**
+   * Replace all non digit characters by empty string
+   */
+  return input.replace(/\D+/mgi, '')
+    .split('')
+    .map(entry => parseInt(entry, 10))
 }
 
 export default inverseCaptchaNext
