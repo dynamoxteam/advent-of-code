@@ -1,7 +1,5 @@
-export const corruptionChecksum = rawInput => {
-  const input = rawInput
-
-  if (rawInput.length === 0) {
+export const minMaxBased = input => {
+  if (input.length === 0) {
     return 0
   }
 
@@ -15,6 +13,36 @@ export const corruptionChecksum = rawInput => {
     return max - min
   })
   .reduce((acc, p) => acc + p, 0)
+}
+
+export const evenlyDivisible = input => {
+  if (input.length === 0) {
+    return 0
+  }
+
+  return input.map(row => {
+    let divisible = 0
+
+    row.forEach(cell => {
+      const match = fetchDivisibleResult(cell, row)
+      divisible = match ? match : divisible
+    })
+
+    return divisible
+  })
+  .reduce((acc, cell) => acc + cell, 0)
+}
+
+export const fetchDivisibleResult = (input, row) => {
+  let match = false
+
+  row.forEach(cell => {
+    if (input !== cell && input % cell === 0) {
+      match = input / cell
+    }
+  })
+
+  return match
 }
 
 export const parseInput = rawInput => {

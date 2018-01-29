@@ -1,5 +1,7 @@
+import debug from 'debug'
 import {
-  corruptionChecksum,
+  evenlyDivisible,
+  minMaxBased,
   parseInput
 } from './src/corruption-checksum'
 
@@ -20,4 +22,11 @@ const input = `278	1689	250	1512	1792	1974	175	1639	235	1635	1690	1947	810	224	9
 149	4140	112	3748	148	815	4261	138	1422	2670	32	334	2029	4750	4472	2010
 114	605	94	136	96	167	553	395	164	159	284	104	530	551	544	18`
 
-console.info('Step1', corruptionChecksum(parseInput(input)))
+const answer = {
+  step1: minMaxBased(parseInput(input)),
+  step2: evenlyDivisible(parseInput(input))
+}
+
+debug('answer')('%O', answer)
+
+export default answer
