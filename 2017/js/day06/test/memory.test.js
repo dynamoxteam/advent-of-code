@@ -39,5 +39,12 @@ describe('memory', () => {
       const ans = bulk([0, 2, 7, 0])
       expect(ans.steps).to.be.equal(5)
     })
+
+    it('Should exercise bulk method with second parameter', () => {
+      const { steps: firstDuplication } = bulk([0, 2, 7, 0], 1)
+      const { steps: secondDuplication } = bulk([0, 2, 7, 0], 2)
+
+      expect(secondDuplication - firstDuplication).to.be.equal(4)
+    })
   })
 })

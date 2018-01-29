@@ -24,25 +24,44 @@ export const distribute = input => {
   return base
 }
 
-export const bulk = input => {
+export const bulk = (input, allowedDuplications = 1) => {
   debug('aoc:day6:bulk')(input)
 
   let memoryLoop = {}
-  let duplicationNotDetected = true
+  let duplicationAllowed = true
   let incremementalInput = input
 
-  while (duplicationNotDetected) {
-    const ans = distribute(incremementalInput)    
-    duplicationNotDetected = !memoryLoop.hasOwnProperty(ans.toString())
+  while (duplicationAllowed) {
+    const data = distribute(incremementalInput)
 
-    debug('aoc:day6:bulk')(ans)
+    debug('aoc:day6:bulk')(data)
     
-    memoryLoop[ans.toString()] = ans
-    incremementalInput = ans
+    if (!memoryLoop.hasOwnProperty(data.toString())) {
+      memoryLoop[data.toString()] = {
+        data: null,
+        count: 0
+      }
+    }
+
+    const { count } = memoryLoop[data.toString()]
+
+    memoryLoop[data.toString()] = {
+      data,
+      count: count + 1
+    }
+    
+    duplicationAllowed = count <= allowedDuplications - 1
+    incremementalInput = data
+  }
+
+  let steps = 0
+
+  for (let key in memoryLoop) {
+    steps = steps + memoryLoop[key]['count']
   }
 
   return {
     memoryLoop,
-    steps: Object.keys(memoryLoop).length + 1
+    steps
   }
 }
