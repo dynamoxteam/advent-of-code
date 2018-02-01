@@ -15,17 +15,14 @@ export const coordinates = positionOneIndexed => {
       continue
     } 
     
-    let lastRound = rounds.slice(-1).pop()
-    
+    let lastRound = last(rounds)
     rounds.push(lastRound + 1)
-    width = rounds.reduce((acc, i) => acc + i)
-    sign = rounds.slice(-1).pop() % 2 ? 1 : -1
+    
+    width = sum(rounds)
+    sign = last(rounds) % 2 ? 1 : -1
   }
 
-  const coordinates = [
-    x.reduce((acc, i) => acc + i, 0),
-    y.reduce((acc, i) => acc + i, 0)
-  ]
+  const coordinates = [sum(x), sum(y)]
 
   debug('aoc:day3:coordinates')(position, coordinates)
 
@@ -39,4 +36,12 @@ export const steps = position => {
   debug('aoc:day3:steps')(position, [x, y], steps)
 
   return steps
+}
+
+export const sum = list => {
+  return list.reduce((acc, i) => acc + i, 0)
+}
+
+export const last = list => {
+  return list.slice(-1).pop()
 }

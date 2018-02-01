@@ -1,7 +1,34 @@
 import { expect } from 'chai'
-import { coordinates, steps } from '../src/memory'
+import { coordinates, last, steps, sum } from '../src/memory'
 
 describe('Day3', () => {
+  describe('last', () => {
+    it('Should implement a last method', () => {
+      expect(last).to.be.a('function')
+    })
+
+    it('Should match some expected results', () => {
+      expect(last([])).to.be.equal(undefined)
+      expect(last([1])).to.be.equal(1)
+      expect(last([1, 2])).to.be.equal(2)
+      expect(last([1, 2, 3])).to.be.equal(3)
+    })
+  })
+
+  describe('sum', () => {
+    it('Should implement a sum method', () => {
+      expect(sum).to.be.a('function')
+    })
+
+    it('Should match some expected results', () => {
+      expect(sum([])).to.be.equal(0)
+      expect(sum([1])).to.be.equal(1)
+      expect(sum([1, 2])).to.be.equal(3)
+      expect(sum([1, 2, 3])).to.be.equal(6)
+      expect(sum([1, 2, 3, 4])).to.be.equal(10)
+    })
+  })
+  
   describe('coordinates', () => {
     it('Should implement a coordinates method', () => {
       expect(coordinates).to.be.a('function')
