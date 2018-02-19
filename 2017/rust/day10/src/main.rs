@@ -5,10 +5,7 @@ use std::io::Read;
 fn calculate_simple_hash(input: &str, list_length: usize) -> usize {
     let mut list = initialize_list(list_length);
 
-    let lengths = input
-        .trim()
-        .split(',')
-        .map(|l| l.parse::<u8>().unwrap());
+    let lengths = input.trim().split(',').map(|l| l.parse::<u8>().unwrap());
 
     let mut curr_pos = 0;
     let mut skip_size = 0;
@@ -22,11 +19,7 @@ fn calculate_knot_hash(input: &str) -> String {
     let mut list = initialize_list(256);
 
     let suffix = [17, 31, 73, 47, 23];
-
-    let lengths = input
-        .trim()
-        .bytes()
-        .chain(suffix.iter().cloned());
+    let lengths = input.trim().bytes().chain(suffix.iter().cloned());
 
     let mut curr_pos: u8 = 0;
     let mut skip_size: u8 = 0;
@@ -39,11 +32,7 @@ fn calculate_knot_hash(input: &str) -> String {
     let mut dense_hash = Vec::<u8>::with_capacity(hash_len);
 
     for i in 0..hash_len {
-        let byte = list
-            .iter()
-            .skip(16 * i)
-            .take(16)
-            .fold(0, |acc, b| acc ^ b);
+        let byte = list.iter().skip(16 * i).take(16).fold(0, |acc, b| acc ^ b);
 
         dense_hash.push(byte);
     }
@@ -68,7 +57,8 @@ fn initialize_list(size: usize) -> Vec<u8> {
 }
 
 fn process_round<L>(list: &mut Vec<u8>, lengths: L, curr_pos: &mut u8, skip_size: &mut u8)
-    where L: Iterator<Item = u8>
+where
+    L: Iterator<Item = u8>,
 {
     for len in lengths {
         reverse_section(list, *curr_pos as usize, len as usize);
@@ -81,7 +71,7 @@ fn process_round<L>(list: &mut Vec<u8>, lengths: L, curr_pos: &mut u8, skip_size
 }
 
 fn reverse_section(list: &mut Vec<u8>, start: usize, length: usize) {
-    for i in 0..length/2 {
+    for i in 0..length / 2 {
         let index1 = (start + i) % list.len();
         let index2 = (start + length - i - 1) % list.len();
 
@@ -111,7 +101,11 @@ fn main() {
         return;
     }
 
-    println!("Simple Hash: {}", calculate_simple_hash(input.as_str(), 256));
+    println!(
+        "Simple Hash: {}",
+        calculate_simple_hash(input.as_str(), 256)
+    );
+
     println!("Knot Hash: {}", calculate_knot_hash(input.as_str()));
 }
 
@@ -123,7 +117,19 @@ fn test_simple_hash() {
 #[test]
 fn test_knot_hash() {
     assert_eq!(calculate_knot_hash(""), "a2582a3a0e66e6e86e3812dcb672a272");
-    assert_eq!(calculate_knot_hash("AoC 2017"), "33efeb34ea91902bb2f59c9920caa6cd");
-    assert_eq!(calculate_knot_hash("1,2,3"), "3efbe78a8d82f29979031a4aa0b16a9d");
-    assert_eq!(calculate_knot_hash("1,2,4"), "63960835bcdc130f0b66d7ff4f6a5a8e");
+
+    assert_eq!(
+        calculate_knot_hash("AoC 2017"),
+        "33efeb34ea91902bb2f59c9920caa6cd"
+    );
+
+    assert_eq!(
+        calculate_knot_hash("1,2,3"),
+        "3efbe78a8d82f29979031a4aa0b16a9d"
+    );
+
+    assert_eq!(
+        calculate_knot_hash("1,2,4"),
+        "63960835bcdc130f0b66d7ff4f6a5a8e"
+    );
 }
