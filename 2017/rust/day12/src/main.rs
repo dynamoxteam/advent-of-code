@@ -5,7 +5,7 @@ use std::fs::File;
 use std::io::Read;
 use regex::Regex;
 
-fn search_linked_to_0(input: &str) -> usize {
+fn analyze_pipes(input: &str) -> (usize, usize) {
     let record_regex = Regex::new(r"(?m)^(?P<id>[0-9]+) +<\-> +(?P<pipes>[0-9, ]+)$").unwrap();
     let pipes_regex = Regex::new(r"(?P<id>[0-9]+)").unwrap();
 
@@ -31,12 +31,7 @@ fn search_linked_to_0(input: &str) -> usize {
 
         programs.append(&mut pipes);
 
-        let group: usize = programs
-            .iter()
-            .cloned()
-            .map(|p| groups[p])
-            .min()
-            .unwrap();
+        let group: usize = programs.iter().cloned().map(|p| groups[p]).min().unwrap();
 
         for program in programs {
             redirect(&mut groups, program, group);
@@ -49,13 +44,22 @@ fn search_linked_to_0(input: &str) -> usize {
         groups[program] = groups[group];
     }
 
-    groups.iter().cloned().filter(|&g| g == 0).count()
+    let group_0_len = groups.iter().cloned().filter(|&g| g == 0).count();
+    
+    let total_groups = groups
+        .iter()
+        .cloned()
+        .enumerate()
+        .filter(|&(p, g)| p == g)
+        .count();
+
+    (group_0_len, total_groups)
 }
 
 fn redirect(groups: &mut Vec<usize>, program: usize, new_group: usize) {
     let mut program = program;
     let mut group = groups[program];
-    
+
     while group != new_group {
         groups[program] = new_group;
 
@@ -90,16 +94,16 @@ fn main() {
         return;
     }
 
-    println!(
-        "Programs connected to ID 0: {}",
-        search_linked_to_0(input.as_str())
-    );
+    let (group_0_len, total_groups) = analyze_pipes(input.as_str());
+
+    println!("Programs connected to ID 0: {}", group_0_len);
+    println!("Number of groups: {}", total_groups);
 }
 
 #[test]
 fn test() {
     assert_eq!(
-        search_linked_to_0(
+        analyze_pipes(
             "0 <-> 2\n\
              1 <-> 1\n\
              2 <-> 0, 3, 4\n\
@@ -108,11 +112,11 @@ fn test() {
              5 <-> 6\n\
              6 <-> 4, 5\n"
         ),
-        6
+        (6, 2)
     );
 
     assert_eq!(
-        search_linked_to_0(
+        analyze_pipes(
             "0 <-> 5\n\
              1 <-> 2\n\
              2 <-> 1, 3\n\
@@ -120,6 +124,6 @@ fn test() {
              4 <-> 3, 5\n\
              5 <-> 0, 4\n"
         ),
-        6
+        (6, 1)
     );
 }
