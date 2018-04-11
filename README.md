@@ -4,7 +4,7 @@
 
 We currently have implementations for languages above:
 
-- [JS](https://github.com/dynamoxteam/advent-of-code/tree/master/2017/js)
-- [Rust](https://github.com/dynamoxteam/advent-of-code/tree/master/2017/rust)
+- [JS](https://github.com/dynamoxteam/advent-of-code/tree/master/2017/js) by [Moacir Rosa](https://github.com/moacirosa)
+- [Rust](https://github.com/dynamoxteam/advent-of-code/tree/master/2017/rust) by [André Milack](https://github.com/Milack27)
 
 Join us sending new language implementations or improvements to the already existent 
