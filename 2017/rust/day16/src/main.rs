@@ -2,51 +2,10 @@ use std::env;
 use std::fs::File;
 use std::io::Read;
 
-fn build_programs(number: usize) -> String {
-    "abcdefghijklmnopqrstuvwxyz".chars().take(number).collect()
-}
+mod sequence;
 
-fn dance(programs: &mut String, input: &str) {
-    for mov in input.trim().split(',') {
-        let (mov_type, params) = mov.split_at(1);
-
-        match mov_type {
-            "s" => spin(programs, params),
-            "x" => exchange(programs, params),
-            "p" => partner(programs, params),
-            _ => (),
-        }
-    }
-}
-
-fn spin(programs: &mut String, params: &str) {
-    let steps = params.parse::<usize>().unwrap();
-
-    unsafe {
-        programs.as_bytes_mut().rotate_right(steps);
-    }
-}
-
-fn exchange(programs: &mut String, params: &str) {
-    let mut indexes = params.split('/').map(|n| n.parse::<usize>().unwrap());
-    let indexes = (indexes.next().unwrap(), indexes.next().unwrap());
-
-    unsafe {
-        programs.as_bytes_mut().swap(indexes.0, indexes.1);
-    }
-}
-
-fn partner(programs: &mut String, params: &str) {
-    let indexes = {
-        let mut indexes = params.split('/').map(|n| programs.find(n).unwrap());
-
-        (indexes.next().unwrap(), indexes.next().unwrap())
-    };
-
-    unsafe {
-        programs.as_bytes_mut().swap(indexes.0, indexes.1);
-    }
-}
+use sequence::Sequence;
+use sequence::Template;
 
 fn main() {
     let arg = env::args().skip(1).next();
@@ -70,24 +29,74 @@ fn main() {
         return;
     }
 
-    let mut programs = build_programs(16);
+    let template = Template::parse(input.as_str(), 16);
 
-    dance(&mut programs, input.as_str());
-    println!("Programs after dance: {}", programs);
-}
+    println!(
+        "Programs after dance: {}",
+        Sequence::identity(16) + &template
+    );
 
-#[test]
-fn test_spin() {
-    let mut programs = String::from("abcde");
-
-    spin(&mut programs, "3");
-    assert_eq!(programs, "cdeab");
+    println!(
+        "Programs after billionth dance: {}",
+        Sequence::identity(16) + 1_000_000_000 * &template
+    );
 }
 
 #[test]
 fn test_moves() {
-    let mut programs = String::from("abcde");
+    let template = Template::parse("s1,x3/4,pe/b", 5);
+    let mut sequence = Sequence::identity(5);
 
-    dance(&mut programs, "s1,x3/4,pe/b");
-    assert_eq!(programs, "baedc");
+    sequence += &template;
+    assert_eq!(format!("{}", sequence), "baedc");
+
+    sequence += &template;
+    assert_eq!(format!("{}", sequence), "ceadb");
+
+    sequence += &template;
+    assert_eq!(format!("{}", sequence), "ecbda");
+
+    sequence += &template;
+    assert_eq!(format!("{}", sequence), "abcde");
+
+    sequence += &template;
+    assert_eq!(format!("{}", sequence), "baedc");
+
+    sequence += &template;
+    assert_eq!(format!("{}", sequence), "ceadb");
+
+    sequence += &template;
+    assert_eq!(format!("{}", sequence), "ecbda");
+
+    assert_eq!(format!("{}", Sequence::identity(5) + &template), "baedc");
+    
+    assert_eq!(
+        format!("{}", Sequence::identity(5) + &template * 2),
+        "ceadb"
+    );
+    
+    assert_eq!(
+        format!("{}", Sequence::identity(5) + &template * 3),
+        "ecbda"
+    );
+    
+    assert_eq!(
+        format!("{}", Sequence::identity(5) + &template * 4),
+        "abcde"
+    );
+    
+    assert_eq!(
+        format!("{}", Sequence::identity(5) + &template * 5),
+        "baedc"
+    );
+    
+    assert_eq!(
+        format!("{}", Sequence::identity(5) + &template * 6),
+        "ceadb"
+    );
+    
+    assert_eq!(
+        format!("{}", Sequence::identity(5) + &template * 7),
+        "ecbda"
+    );
 }
