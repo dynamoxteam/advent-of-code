@@ -6,7 +6,7 @@ use regex::Regex;
 
 fn execute_instructions(input: &str) -> (isize, isize) {
     let instruction_re = Regex::new(
-        r"(?m)^([^\s]+) +([[:alpha:]]+) +([^\s]+) +if +([^\s]+) +([^\s]+) +([^\s]+)$",
+        r"(?m)^([^\s]+) +([[:alpha:]]+) +([^\s]+) +if +([^\s]+) +([^\s]+) +([^\s]+)\r?$",
     ).unwrap();
 
     let mut registers = HashMap::<&str, isize>::new();

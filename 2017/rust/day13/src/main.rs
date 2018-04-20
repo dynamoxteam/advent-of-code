@@ -20,7 +20,7 @@ impl Layer {
 }
 
 fn parse_layers(input: &str) -> Vec<Layer> {
-    let layer_regex = Regex::new(r"(?m)^(?P<depth>[0-9]+) *: +(?P<range>[0-9]+)$").unwrap();
+    let layer_regex = Regex::new(r"(?m)^(?P<depth>[0-9]+) *: +(?P<range>[0-9]+)\r?$").unwrap();
 
     let mut layers = Vec::<Layer>::new();
 

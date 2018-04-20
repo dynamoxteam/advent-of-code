@@ -4,7 +4,7 @@ extern crate regex;
 use regex::Regex;
 
 fn analyze_pipes(input: &str) -> (usize, usize) {
-    let record_regex = Regex::new(r"(?m)^(?P<id>[0-9]+) +<\-> +(?P<pipes>[0-9, ]+)$").unwrap();
+    let record_regex = Regex::new(r"(?m)^(?P<id>[0-9]+) +<\-> +(?P<pipes>[0-9, ]+)\r?$").unwrap();
     let pipes_regex = Regex::new(r"(?P<id>[0-9]+)").unwrap();
 
     let total_programs = input.trim().lines().count();

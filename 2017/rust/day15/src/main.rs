@@ -6,7 +6,7 @@ use regex::Regex;
 
 fn get_initial_values(input: &str) -> (usize, usize) {
     let val_regex =
-        Regex::new(r"(?m)^Generator (?P<generator>[A-Z]?) starts with (?P<value>[0-9]+)$").unwrap();
+        Regex::new(r"(?m)^Generator (?P<generator>[A-Z]?) starts with (?P<value>[0-9]+)\r?$").unwrap();
 
     let mut values: (usize, usize) = (0, 0);
 

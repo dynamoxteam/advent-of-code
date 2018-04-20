@@ -15,7 +15,7 @@ struct Program<'a> {
 
 fn assemble_program_tree(input: &str) -> HashMap<&str, Program> {
     let program_regex = Regex::new(
-        r"(?m)^(?P<name>[[:alpha:]]+) +\((?P<weight>\d+)\)(?: +\->(?P<children>.*))?$",
+        r"(?m)^(?P<name>[[:alpha:]]+) +\((?P<weight>\d+)\)(?: +\->(?P<children>.*))?\r?$",
     ).unwrap();
     
     let children_regex = Regex::new(r"(?P<name>[[:alpha:]]+)").unwrap();
