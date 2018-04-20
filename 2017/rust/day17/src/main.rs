@@ -1,4 +1,4 @@
-use std::env;
+extern crate common;
 
 fn compute_buffer(input: usize, elements: usize) -> Vec<usize> {
     let mut buffer = Vec::<usize>::with_capacity(elements);
@@ -24,14 +24,7 @@ fn compute_next(input: usize, elements: usize, value: usize) -> usize {
 }
 
 fn main() {
-    let arg = env::args().skip(1).next();
-
-    if let None = arg {
-        println!("Usage: day17 <input>");
-        return;
-    }
-
-    let input = arg.unwrap().parse::<usize>().unwrap();
+    let input: usize = common::load_input("day17");
 
     println!(
         "Next value after the last: {}",
