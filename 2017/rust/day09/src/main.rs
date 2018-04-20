@@ -1,6 +1,4 @@
-use std::env;
-use std::fs::File;
-use std::io::Read;
+extern crate common;
 
 fn process_stream(input: &str) -> (usize, usize) {
     let mut stream = input.chars();
@@ -49,27 +47,7 @@ fn process_garbage<I: Iterator<Item = char>>(stream: &mut I) -> usize {
 }
 
 fn main() {
-    let arg = env::args().skip(1).next();
-
-    if let None = arg {
-        println!("Usage: day09 <input file>");
-        return;
-    }
-
-    let file = File::open(arg.unwrap());
-
-    if let Err(error) = file {
-        println!("{}", error.to_string());
-        return;
-    }
-
-    let mut input = String::new();
-
-    if let Err(error) = file.unwrap().read_to_string(&mut input) {
-        println!("{}", error.to_string());
-        return;
-    }
-
+    let input = common::load_file_input("day09");
     let (score, garbage_chars) = process_stream(input.as_str());
 
     println!("Total score: {}", score);

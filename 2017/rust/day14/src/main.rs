@@ -1,6 +1,5 @@
+extern crate common;
 extern crate day10;
-
-use std::env;
 
 fn get_hash_input(key: &str, row: usize) -> String {
     format!("{}-{}", key, row)
@@ -78,14 +77,7 @@ fn inspect_square(grid: &mut Vec<Vec<bool>>, i: usize, j: usize) -> usize {
 }
 
 fn main() {
-    let arg = env::args().skip(1).next();
-
-    if let None = arg {
-        println!("Usage: day14 <input>");
-        return;
-    }
-
-    let input = arg.unwrap();
+    let input = common::load_input_str("day14");
 
     println!("Used squares: {}", calculate_used_squares(input.as_str()));
     println!("Regions: {}", calculate_regions(input.as_str()));

@@ -1,6 +1,5 @@
-use std::env;
-use std::fs::File;
-use std::io::Read;
+extern crate common;
+
 use std::collections::HashMap;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -57,26 +56,7 @@ fn count_valid_passphrases(input: &str, security: PassphraseSecurity) -> usize {
 }
 
 fn main() {
-    let arg = env::args().skip(1).next();
-
-    if let None = arg {
-        println!("Usage: day04 <input file>");
-        return;
-    }
-
-    let file = File::open(arg.unwrap());
-
-    if let Err(error) = file {
-        println!("{}", error.to_string());
-        return;
-    }
-
-    let mut input = String::new();
-
-    if let Err(error) = file.unwrap().read_to_string(&mut input) {
-        println!("{}", error.to_string());
-        return;
-    }
+    let input = common::load_file_input("day04");
 
     println!(
         "Basic security: {}",

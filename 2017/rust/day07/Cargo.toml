@@ -4,4 +4,5 @@ version = "0.1.0"
 authors = ["André Vicente Milack <andrevicente.m@gmail.com>"]
 
 [dependencies]
+common = { path = "../common" }
 regex = "0.2.5"

@@ -1,6 +1,4 @@
-use std::env;
-use std::fs::File;
-use std::io::Read;
+extern crate common;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 enum ChecksumType {
@@ -87,26 +85,7 @@ where
 }
 
 fn main() {
-    let arg = env::args().skip(1).next();
-
-    if let None = arg {
-        println!("Usage: day02 <input file>");
-        return;
-    }
-
-    let file = File::open(arg.unwrap());
-
-    if let Err(error) = file {
-        println!("{}", error.to_string());
-        return;
-    }
-
-    let mut input = String::new();
-
-    if let Err(error) = file.unwrap().read_to_string(&mut input) {
-        println!("{}", error.to_string());
-        return;
-    }
+    let input = common::load_file_input("day02");
 
     match solve_checksum(input.as_str(), ChecksumType::MinMaxDiff) {
         Ok(value) => println!("Min-max difference checksum: {}", value),

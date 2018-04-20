@@ -1,4 +1,5 @@
-use std::env;
+extern crate common;
+
 use std::cmp::max;
 
 fn calculate_position(input: u32) -> (i32, i32) {
@@ -117,21 +118,7 @@ fn find_first_larger(input: u32) -> u32 {
 }
 
 fn main() {
-    let arg = env::args().skip(1).next();
-
-    if let None = arg {
-        println!("Usage day03 <input string>");
-        return;
-    }
-
-    let input = arg.unwrap().parse::<u32>();
-
-    if let Err(error) = input {
-        println!("Could not convert the input into a value: {}", error);
-        return;
-    }
-
-    let input = input.unwrap();
+    let input: u32 = common::load_input("day03");
 
     println!("Shortest path: {}", find_shortest_path(input));
     println!("First larger: {}", find_first_larger(input));

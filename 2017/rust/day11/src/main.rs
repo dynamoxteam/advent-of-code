@@ -1,6 +1,5 @@
-use std::env;
-use std::fs::File;
-use std::io::Read;
+extern crate common;
+
 use std::ops::Add;
 use std::ops::AddAssign;
 
@@ -67,27 +66,7 @@ fn calculate_steps(pos: &Position) -> usize {
 }
 
 fn main() {
-    let arg = env::args().skip(1).next();
-
-    if let None = arg {
-        println!("Usage: day11 <input file>");
-        return;
-    }
-
-    let file = File::open(arg.unwrap());
-
-    if let Err(error) = file {
-        println!("{}", error.to_string());
-        return;
-    }
-
-    let mut input = String::new();
-
-    if let Err(error) = file.unwrap().read_to_string(&mut input) {
-        println!("{}", error.to_string());
-        return;
-    }
-
+    let input = common::load_file_input("day11");
     let (steps, max_steps) = analyze_path(input.as_str());
 
     println!("Fewest steps: {}", steps);

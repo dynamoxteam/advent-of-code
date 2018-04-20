@@ -1,6 +1,5 @@
-use std::env;
-use std::fs::File;
-use std::io::Read;
+extern crate common;
+
 use std::cmp::Ordering;
 
 fn reallocate(input: &str) -> (usize, usize) {
@@ -51,27 +50,7 @@ fn reallocate(input: &str) -> (usize, usize) {
 }
 
 fn main() {
-    let arg = env::args().skip(1).next();
-
-    if let None = arg {
-        println!("Usage: day06 <input file>");
-        return;
-    }
-
-    let file = File::open(arg.unwrap());
-
-    if let Err(error) = file {
-        println!("{}", error.to_string());
-        return;
-    }
-
-    let mut input = String::new();
-
-    if let Err(error) = file.unwrap().read_to_string(&mut input) {
-        println!("{}", error.to_string());
-        return;
-    }
-
+    let input = common::load_file_input("day05");
     let (cycles, loop_size) = reallocate(input.as_str());
 
     println!("Redistribution cycles: {}", cycles);

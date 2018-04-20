@@ -1,8 +1,6 @@
+extern crate common;
 extern crate regex;
 
-use std::env;
-use std::fs::File;
-use std::io::Read;
 use std::collections::HashMap;
 use regex::Regex;
 
@@ -62,27 +60,7 @@ fn execute_instructions(input: &str) -> (isize, isize) {
 }
 
 fn main() {
-    let arg = env::args().skip(1).next();
-
-    if let None = arg {
-        println!("Usage: day08 <input file>");
-        return;
-    }
-
-    let file = File::open(arg.unwrap());
-
-    if let Err(error) = file {
-        println!("{}", error.to_string());
-        return;
-    }
-
-    let mut input = String::new();
-
-    if let Err(error) = file.unwrap().read_to_string(&mut input) {
-        println!("{}", error.to_string());
-        return;
-    }
-
+    let input = common::load_file_input("day08");
     let (final_max, process_max) = execute_instructions(input.as_str());
 
     println!("Largest final value: {}", final_max);

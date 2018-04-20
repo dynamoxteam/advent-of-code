@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["André Vicente Milack <andre.milack@wavetech-st.com>"]
 
 [dependencies]
+common = { path = "../common" }

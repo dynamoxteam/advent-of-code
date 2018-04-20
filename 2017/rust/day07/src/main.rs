@@ -1,8 +1,6 @@
+extern crate common;
 extern crate regex;
 
-use std::env;
-use std::fs::File;
-use std::io::Read;
 use std::collections::HashMap;
 use regex::Regex;
 
@@ -173,26 +171,7 @@ fn search_programs(input: &str) -> (&str, Option<usize>) {
 }
 
 fn main() {
-    let arg = env::args().skip(1).next();
-
-    if let None = arg {
-        println!("Usage: day07 <input file>");
-        return;
-    }
-
-    let file = File::open(arg.unwrap());
-
-    if let Err(error) = file {
-        println!("{}", error.to_string());
-        return;
-    }
-
-    let mut input = String::new();
-
-    if let Err(error) = file.unwrap().read_to_string(&mut input) {
-        println!("{}", error.to_string());
-        return;
-    }
+    let input = common::load_file_input("day07");
 
     let (bottom_program, corrected_weight) = search_programs(input.as_str());
 

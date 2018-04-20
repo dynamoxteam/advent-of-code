@@ -1,8 +1,6 @@
+extern crate common;
 extern crate regex;
 
-use std::env;
-use std::fs::File;
-use std::io::Read;
 use regex::Regex;
 
 fn analyze_pipes(input: &str) -> (usize, usize) {
@@ -73,27 +71,7 @@ fn redirect(groups: &mut Vec<usize>, program: usize, new_group: usize) {
 }
 
 fn main() {
-    let arg = env::args().skip(1).next();
-
-    if let None = arg {
-        println!("Usage: day12 <input file>");
-        return;
-    }
-
-    let file = File::open(arg.unwrap());
-
-    if let Err(error) = file {
-        println!("{}", error.to_string());
-        return;
-    }
-
-    let mut input = String::new();
-
-    if let Err(error) = file.unwrap().read_to_string(&mut input) {
-        println!("{}", error.to_string());
-        return;
-    }
-
+    let input = common::load_file_input("day12");
     let (group_0_len, total_groups) = analyze_pipes(input.as_str());
 
     println!("Programs connected to ID 0: {}", group_0_len);
