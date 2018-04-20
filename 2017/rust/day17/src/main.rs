@@ -1,36 +1,26 @@
 use std::env;
 
-fn compute_buffer(input: usize, elements: usize) -> (usize, Vec<usize>) {
+fn compute_buffer(input: usize, elements: usize) -> Vec<usize> {
     let mut buffer = Vec::<usize>::with_capacity(elements);
     let mut pos = 0;
 
     buffer.push(0);
 
     for n in 1..elements {
-        pos = (pos + input) % buffer.len() + 1;
-        buffer.insert(pos, n);
+        (0..input).for_each(|_| pos = buffer[pos]);
 
-        if n % 10000 == 0 {
-            println!("{}", n);
-        }
+        let next = buffer[pos];
+        
+        buffer.push(next);
+        buffer[pos] = n;
+        pos = n;
     }
 
-    (pos, buffer)
+    buffer
 }
 
-fn compute_next_value(input: usize, elements: usize) -> usize {
-    let (mut pos, buffer) = compute_buffer(input, elements);
-
-    pos = (pos + 1) % buffer.len();
-    buffer[pos]
-}
-
-fn compute_value_after_0(input: usize, elements: usize) -> usize {
-    let (_, buffer) = compute_buffer(input, elements);
-    let mut pos = buffer.iter().position(|&n| n == 0).unwrap();
-
-    pos = (pos + 1) % buffer.len();
-    buffer[pos]
+fn compute_next(input: usize, elements: usize, value: usize) -> usize {
+    compute_buffer(input, elements)[value]
 }
 
 fn main() {
@@ -45,52 +35,50 @@ fn main() {
 
     println!(
         "Next value after the last: {}",
-        compute_next_value(input, 2018)
+        compute_next(input, 2018, 2017)
     );
     
     println!(
         "Next value after 0: {}",
-        compute_value_after_0(input, 50_000_000)
+        compute_next(input, 50_000_000, 0)
     );
 }
 
 #[test]
 fn test_buffer() {
-    let (pos, buffer) = compute_buffer(3, 2018);
+    let buffer = compute_buffer(3, 2018);
 
-    assert_eq!(buffer[pos - 3], 1512);
-    assert_eq!(buffer[pos - 2], 1134);
-    assert_eq!(buffer[pos - 1], 151);
-    assert_eq!(buffer[pos], 2017);
-    assert_eq!(buffer[pos + 1], 638);
-    assert_eq!(buffer[pos + 2], 1513);
-    assert_eq!(buffer[pos + 3], 851);
+    assert_eq!(buffer[1512], 1134);
+    assert_eq!(buffer[1134], 151);
+    assert_eq!(buffer[151], 2017);
+    assert_eq!(buffer[638], 1513);
+    assert_eq!(buffer[1513], 851);
 }
 
 #[test]
-fn test_next_value() {
-    assert_eq!(compute_next_value(3, 1), 0);
-    assert_eq!(compute_next_value(3, 2), 0);
-    assert_eq!(compute_next_value(3, 3), 1);
-    assert_eq!(compute_next_value(3, 4), 1);
-    assert_eq!(compute_next_value(3, 5), 3);
-    assert_eq!(compute_next_value(3, 6), 2);
-    assert_eq!(compute_next_value(3, 7), 1);
-    assert_eq!(compute_next_value(3, 8), 2);
-    assert_eq!(compute_next_value(3, 9), 6);
-    assert_eq!(compute_next_value(3, 10), 5);
+fn test_after_last() {
+    assert_eq!(compute_next(3, 1, 0), 0);
+    assert_eq!(compute_next(3, 2, 1), 0);
+    assert_eq!(compute_next(3, 3, 2), 1);
+    assert_eq!(compute_next(3, 4, 3), 1);
+    assert_eq!(compute_next(3, 5, 4), 3);
+    assert_eq!(compute_next(3, 6, 5), 2);
+    assert_eq!(compute_next(3, 7, 6), 1);
+    assert_eq!(compute_next(3, 8, 7), 2);
+    assert_eq!(compute_next(3, 9, 8), 6);
+    assert_eq!(compute_next(3, 10, 9), 5);
 }
 
 #[test]
-fn test_after_0() {
-    assert_eq!(compute_value_after_0(3, 1), 0);
-    assert_eq!(compute_value_after_0(3, 2), 1);
-    assert_eq!(compute_value_after_0(3, 3), 2);
-    assert_eq!(compute_value_after_0(3, 4), 2);
-    assert_eq!(compute_value_after_0(3, 5), 2);
-    assert_eq!(compute_value_after_0(3, 6), 5);
-    assert_eq!(compute_value_after_0(3, 7), 5);
-    assert_eq!(compute_value_after_0(3, 8), 5);
-    assert_eq!(compute_value_after_0(3, 9), 5);
-    assert_eq!(compute_value_after_0(3, 10), 9);
+fn test_after_zero() {
+    assert_eq!(compute_next(3, 1, 0), 0);
+    assert_eq!(compute_next(3, 2, 0), 1);
+    assert_eq!(compute_next(3, 3, 0), 2);
+    assert_eq!(compute_next(3, 4, 0), 2);
+    assert_eq!(compute_next(3, 5, 0), 2);
+    assert_eq!(compute_next(3, 6, 0), 5);
+    assert_eq!(compute_next(3, 7, 0), 5);
+    assert_eq!(compute_next(3, 8, 0), 5);
+    assert_eq!(compute_next(3, 9, 0), 5);
+    assert_eq!(compute_next(3, 10, 0), 9);
 }
