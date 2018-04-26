@@ -114,7 +114,33 @@ impl Program {
         Program { instructions }
     }
 
-    fn execute(
+    fn execute_sound(&self) -> isize {
+        let mut registers = HashMap::new();
+        let mut pc = 0;
+        let mut last_freq = 0;
+
+        while let Some(instruction) = self.instructions.get(pc as usize) {
+            let mut pc_inc = 1;
+
+            match *instruction {
+                Instruction::Snd(ref val) => last_freq = Program::read_value(val, &registers),
+                Instruction::Rcv(ref reg) => {
+                    let value = registers.get(&reg.0).map(|v| *v).unwrap_or(0);
+
+                    if value != 0 {
+                        return last_freq;
+                    }
+                }
+                _ => pc_inc = Program::execute_common_inst(instruction, &mut registers),
+            };
+
+            pc += pc_inc;
+        }
+
+        0
+    }
+
+    fn execute_duet(
         &self,
         id: usize,
         control: Sender<Message>,
@@ -136,18 +162,6 @@ impl Program {
                     control.send(Message::Sending(id)).unwrap();
                     tx.send(msg).unwrap();
                 }
-                Instruction::Set(ref reg, ref val) => {
-                    Program::update_value(reg, val, &mut registers, |_, y| y);
-                }
-                Instruction::Add(ref reg, ref val) => {
-                    Program::update_value(reg, val, &mut registers, |x, y| x + y);
-                }
-                Instruction::Mul(ref reg, ref val) => {
-                    Program::update_value(reg, val, &mut registers, |x, y| x * y);
-                }
-                Instruction::Mod(ref reg, ref val) => {
-                    Program::update_value(reg, val, &mut registers, |x, y| x % y);
-                }
                 Instruction::Rcv(ref reg) => {
                     control.send(Message::Receiving(id)).unwrap();
 
@@ -163,17 +177,40 @@ impl Program {
                         _ => (),
                     }
                 }
-                Instruction::Jgz(ref val, ref offset) => {
-                    if Program::read_value(val, &mut registers) > 0 {
-                        pc_inc = Program::read_value(offset, &mut registers);
-                    }
-                }
+                _ => pc_inc = Program::execute_common_inst(instruction, &mut registers),
             };
 
             pc += pc_inc;
         }
 
         Ok(())
+    }
+
+    fn execute_common_inst(instruction: &Instruction, map: &mut HashMap<char, isize>) -> isize {
+        let mut pc_inc = 1;
+
+        match *instruction {
+            Instruction::Set(ref reg, ref val) => {
+                Program::update_value(reg, val, map, |_, y| y);
+            }
+            Instruction::Add(ref reg, ref val) => {
+                Program::update_value(reg, val, map, |x, y| x + y);
+            }
+            Instruction::Mul(ref reg, ref val) => {
+                Program::update_value(reg, val, map, |x, y| x * y);
+            }
+            Instruction::Mod(ref reg, ref val) => {
+                Program::update_value(reg, val, map, |x, y| x % y);
+            }
+            Instruction::Jgz(ref val, ref offset) => {
+                if Program::read_value(val, map) > 0 {
+                    pc_inc = Program::read_value(offset, map);
+                }
+            }
+            _ => (),
+        }
+
+        pc_inc
     }
 
     fn read_value(value: &Value, map: &HashMap<char, isize>) -> isize {
@@ -195,7 +232,7 @@ impl Program {
         map.insert(register.0, new_value);
     }
 
-    pub fn run(self) -> [usize; 2] {
+    pub fn run_duet(self) -> [usize; 2] {
         let program = Arc::new(self);
         let (prg0, prg1) = (program.clone(), program.clone());
 
@@ -207,8 +244,8 @@ impl Program {
         let (ctrl1, tx1, rx1) = (ctrl_tx.clone(), prg0_tx.clone(), prg1_rx);
 
         let threads = (
-            thread::spawn(move || prg0.execute(0, ctrl0, tx0, rx0)),
-            thread::spawn(move || prg1.execute(1, ctrl1, tx1, rx1)),
+            thread::spawn(move || prg0.execute_duet(0, ctrl0, tx0, rx0)),
+            thread::spawn(move || prg1.execute_duet(1, ctrl1, tx1, rx1)),
         );
 
         let mut send_count = [0, 0];
@@ -243,11 +280,30 @@ fn main() {
     let input = common::load_file_input("day18");
     let program = Program::load(input.as_str());
 
-    println!("Program 1 sent: {}", program.run()[1]);
+    println!("Recovered frequency: {}", program.execute_sound());
+    println!("Program 1 sent: {}", program.run_duet()[1]);
 }
 
 #[test]
-fn test() {
+fn test_sound() {
+    let program = Program::load(
+        "set a 1\n\
+         add a 2\n\
+         mul a a\n\
+         mod a 5\n\
+         snd a\n\
+         set a 0\n\
+         rcv a\n\
+         jgz a -1\n\
+         set a 1\n\
+         jgz a -2",
+    );
+
+    assert_eq!(program.execute_sound(), 4);
+}
+
+#[test]
+fn test_duet() {
     let program = Program::load(
         "snd 1\n\
          snd 2\n\
@@ -258,5 +314,5 @@ fn test() {
          rcv d\n",
     );
 
-    assert_eq!(program.run(), [3, 3]);
+    assert_eq!(program.run_duet(), [3, 3]);
 }
