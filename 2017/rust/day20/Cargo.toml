@@ -1,0 +1,8 @@
+[package]
+name = "day20"
+version = "0.1.0"
+authors = ["André Vicente Milack <andrevicente.m@gmail.com>"]
+
+[dependencies]
+common = { path = "../common" }
+regex = "1.0.0"
